@@ -8,7 +8,7 @@ const PersonalInfo: React.FC<{ register: any; watch: any; setValue: any }> = ({ 
         <option value="Dr.">Dr.</option>
         <option value="Mr.">Mr.</option>
         <option value="Ms.">Ms.</option>
-      </select>
+      </select> 
 
       <label className="block text-lg font-semibold">Name</label>
       <input {...register("name")} style={{ textTransform: "uppercase" }} className="border p-3 rounded-lg w-full shadow-sm focus:ring-2 focus:ring-blue-400" />
