@@ -14,13 +14,13 @@ const ProfileForm: React.FC = () => {
   const [page, setPage] = useState(0);
 
   const sections = [
-    <PersonalInfo register={register} watch={watch} setValue={setValue} />,
-    <FamilyDetails register={register} />,
-    <AddressDetails register={register} />,
-    <PermanentAddress register={register} watch={watch} setValue={setValue} />, 
-    <ContactInfo register={register} />,
-    <MedicalAndWork register={register} />,
-    <DesignationDetails register={register} />,
+    { title: "Personal Info", component: <PersonalInfo register={register} watch={watch} setValue={setValue} /> },
+    { title: "Family Details", component: <FamilyDetails register={register} /> },
+    { title: "Address Details", component: <AddressDetails register={register} /> },
+    { title: "Permanent Address", component: <PermanentAddress register={register} watch={watch} setValue={setValue} /> },
+    { title: "Contact Info", component: <ContactInfo register={register} /> },
+    { title: "Medical & Work", component: <MedicalAndWork register={register} /> },
+    { title: "Designation", component: <DesignationDetails register={register} /> },
   ];
 
   const onSubmit = (data: any) => {
@@ -35,8 +35,9 @@ const ProfileForm: React.FC = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="p-6 border rounded-xl shadow-lg w-full max-w-2xl mx-auto bg-white space-y-6"
     >
-      {sections[page]}
+      {sections[page].component}
 
+      {/* Navigation Buttons */}
       <div className="flex justify-between mt-6">
         {page > 0 && (
           <button
@@ -63,6 +64,22 @@ const ProfileForm: React.FC = () => {
             Submit
           </button>
         )}
+      </div>
+
+      {/* Numbered Navigation */}
+      <div className="flex justify-center space-x-2 mt-6">
+        {sections.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setPage(index)}
+            type="button"
+            className={`w-10 h-10 flex items-center justify-center font-semibold rounded-full shadow-md transition ${
+              page === index ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </motion.form>
   );

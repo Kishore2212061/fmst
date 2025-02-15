@@ -3,7 +3,7 @@ const db = require("../config/db");
 
 const getSalutations = async (req, res,db) => {
   try {
-    const [result] = await db.execute("SELECT * FROM salutation");
+    const [result] = await db.execute("SELECT * FROM salutation order by id");
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -13,7 +13,7 @@ const getSalutations = async (req, res,db) => {
 
 const getGenders = async (req, res,db) => {
   try {
-    const [result] = await db.execute("SELECT * FROM gender");
+    const [result] = await db.execute("SELECT * FROM gender order by id");
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -22,11 +22,38 @@ const getGenders = async (req, res,db) => {
 
 const getMaritalStatuses = async (req, res,db) => {
   try {
-    const [result] = await db.execute("SELECT * FROM maritalstatus");
+    const [result] = await db.execute("SELECT * FROM maritalstatus order by id");
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-module.exports = { getSalutations, getGenders, getMaritalStatuses };
+const getReligion = async (req, res,db) => {
+  try {
+    const [result] = await db.execute("SELECT * FROM religion order by id");
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const getBloodGroup = async (req, res,db) => {
+  try {
+    const [result] = await db.execute("SELECT * FROM bloodgroup order by id");
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const getDesignation = async (req, res,db) => {
+  try {
+    const [result] = await db.execute("SELECT * FROM designation order by id");
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { getSalutations, getGenders, getMaritalStatuses,getReligion,getBloodGroup,getDesignation};

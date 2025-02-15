@@ -1,23 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { create } from "zustand";
+import axios from "axios";
+
+interface DropdownStore {
+  designations: { id: number; name: string }[];
+  fetchDesignations: () => void;
+}
+
+const useDropdownStore = create<DropdownStore>((set) => ({
+  designations: [],
+  fetchDesignations: async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/designation");
+      set({ designations: response.data || [] });
+    } catch (error) {
+      console.error("Error fetching designations:", error);
+    }
+  },
+}));
 
 const DesignationDetails: React.FC<{ register: any }> = ({ register }) => {
+  const { designations, fetchDesignations } = useDropdownStore();
+
+  useEffect(() => {
+    fetchDesignations();
+  }, []);
+
   return (
     <div className="space-y-4">
       <label className="block text-lg font-semibold">Designation</label>
       <select {...register("designation")} className="border p-3 rounded-lg w-full shadow-sm focus:ring-2 focus:ring-blue-400">
-        <optgroup label="Teaching Staff">
-          <option value="Professor">Professor</option>
-          <option value="Assistant Professor">Assistant Professor</option>
-          <option value="HOD">Head of Department</option>
-        </optgroup>
-        <optgroup label="Administrative Staff">
-          <option value="Principal">Principal</option>
-          <option value="Vice Principal">Vice Principal</option>
-        </optgroup>
-        <optgroup label="Non-Teaching Staff">
-          <option value="Librarian">Librarian</option>
-          <option value="Lab Assistant">Lab Assistant</option>
-        </optgroup>
+        {designations.map((designation) => (
+          <option key={designation.id} value={designation.name}>
+            {designation.name}
+          </option>
+        ))}
       </select>
     </div>
   );
