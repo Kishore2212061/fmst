@@ -51,8 +51,10 @@ const PersonalInfo: React.FC<{ register: any; watch: any; setValue: any }> = ({ 
   // Filter gender list based on selected salutation
   useEffect(() => {
     if (!genders.length) return;
-
-    if (selectedSalutation === "Mr.") {
+    if (selectedSalutation==="Ms."){
+      setFilteredGenders(genders.filter((g) => g.name === "Female"));
+    } 
+    else if (selectedSalutation === "Mr.") {
       setFilteredGenders(genders.filter((g) => g.name === "Male"));
     } else {
       setFilteredGenders(genders);
