@@ -12,7 +12,7 @@ const AuthPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = isRegister ? "http://localhost:5000/register" : "http://localhost:5000/login";
+    const url = isRegister ? "http://localhost:5000/auth/register" : "http://localhost:5000/auth/login";
 
     try {
       const response = await fetch(url, {

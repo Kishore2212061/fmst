@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
-// Get Salutations
-const getSalutations = async (req, res) => {
+
+const getSalutations = async (req, res,db) => {
   try {
     const [result] = await db.execute("SELECT * FROM salutation");
     res.json(result);
@@ -10,8 +10,8 @@ const getSalutations = async (req, res) => {
   }
 };
 
-// Get Genders
-const getGenders = async (req, res) => {
+
+const getGenders = async (req, res,db) => {
   try {
     const [result] = await db.execute("SELECT * FROM gender");
     res.json(result);
@@ -20,7 +20,7 @@ const getGenders = async (req, res) => {
   }
 };
 
-const getMaritalStatuses = async (req, res) => {
+const getMaritalStatuses = async (req, res,db) => {
   try {
     const [result] = await db.execute("SELECT * FROM maritalstatus");
     res.json(result);
