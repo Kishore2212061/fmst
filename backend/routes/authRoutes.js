@@ -8,4 +8,5 @@ function authRoutes(db) {
   return router;
 }
 
+
 module.exports = authRoutes;
