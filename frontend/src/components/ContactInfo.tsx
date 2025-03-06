@@ -43,9 +43,8 @@ const ContactInfo: React.FC<{ register: any; setValue: any; watch: any; errors: 
               },
             })}
             placeholder="Enter official mobile number"
-            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${
-              errors.mobile ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${errors.mobile ? "border-red-500" : "border-gray-300"
+              }`}
             onInput={(e) => (e.currentTarget.value = e.currentTarget.value.replace(/\D/g, ""))}
           />
           {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile.message}</p>}
@@ -64,9 +63,8 @@ const ContactInfo: React.FC<{ register: any; setValue: any; watch: any; errors: 
               },
             })}
             placeholder="Enter official email ID"
-            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${errors.email ? "border-red-500" : "border-gray-300"
+              }`}
           />
           {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
         </div>
@@ -86,9 +84,8 @@ const ContactInfo: React.FC<{ register: any; setValue: any; watch: any; errors: 
               },
             })}
             placeholder="Enter personal mobile number"
-            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${
-              errors.Persmobile ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${errors.Persmobile ? "border-red-500" : "border-gray-300"
+              }`}
             onInput={(e) => (e.currentTarget.value = e.currentTarget.value.replace(/\D/g, ""))}
           />
           {errors.Persmobile && <p className="text-red-500 text-xs mt-1">{errors.Persmobile.message}</p>}
@@ -107,9 +104,8 @@ const ContactInfo: React.FC<{ register: any; setValue: any; watch: any; errors: 
               },
             })}
             placeholder="Enter personal email ID"
-            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${
-              errors.Persemail ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${errors.Persemail ? "border-red-500" : "border-gray-300"
+              }`}
           />
           {errors.Persemail && <p className="text-red-500 text-xs mt-1">{errors.Persemail.message}</p>}
         </div>
@@ -129,9 +125,8 @@ const ContactInfo: React.FC<{ register: any; setValue: any; watch: any; errors: 
               },
             })}
             placeholder="Enter emergency mobile number"
-            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${
-              errors.emergencyMobile ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${errors.emergencyMobile ? "border-red-500" : "border-gray-300"
+              }`}
             onInput={(e) => (e.currentTarget.value = e.currentTarget.value.replace(/\D/g, ""))}
           />
           {errors.emergencyMobile && <p className="text-red-500 text-xs mt-1">{errors.emergencyMobile.message}</p>}
@@ -150,9 +145,8 @@ const ContactInfo: React.FC<{ register: any; setValue: any; watch: any; errors: 
               },
             })}
             placeholder="Enter emergency email ID"
-            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${
-              errors.emergencyEmail ? "border-red-500 focus:border-red-500 hover:border-red-500" : "border-gray-300"
-            }`}
+            className={`border p-2 text-sm rounded w-full shadow-sm focus:ring-2 focus:ring-blue-400 ${errors.emergencyEmail ? "border-red-500 focus:border-red-500 hover:border-red-500" : "border-gray-300"
+              }`}
           />
           {errors.emergencyEmail && <p className="text-red-500 text-xs mt-1">{errors.emergencyEmail.message}</p>}
         </div>

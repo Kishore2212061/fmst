@@ -11,7 +11,7 @@ interface FamilyDetailsProps {
 }
 
 const FamilyDetails: React.FC<FamilyDetailsProps> = ({ register, watch, setValue }) => {
-  const {  formState: { errors } } = useForm();
+  const { formState: { errors } } = useForm();
   const { religions, fetchReligions } = useReligionStore();
   const { community, fetchCommunity } = useCommunityStore();
 
@@ -135,7 +135,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({ register, watch, setValue
 
       </div>
       <div>
-      <ContactInfo register={register} watch={watch} setValue={setValue} errors={errors} />
+        <ContactInfo register={register} watch={watch} setValue={setValue} errors={errors} />
       </div>
     </div>
   );

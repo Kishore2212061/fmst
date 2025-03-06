@@ -82,7 +82,7 @@ export const usePermanentAddressStore = create<PermanentAddressStore>((set) => {
     },
 
     setPermanentAddress: (address) => {
-      localStorage.setItem("permanentAddress", address); 
+      localStorage.setItem("permanentAddress", address);
       set({ permanentAddress: address });
     },
 

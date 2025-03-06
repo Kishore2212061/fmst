@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import useBloodGroupStore from "../../store/useBloodGroupStore"; 
+import useBloodGroupStore from "../../store/useBloodGroupStore";
 
 const MedicalAndWork: React.FC<{ register: any; setValue: any; watch: any }> = ({ register, setValue, watch }) => {
   const { bloodGroups, fetchBloodGroups, rehydrateState } = useBloodGroupStore();

@@ -8,7 +8,7 @@ interface AuthState {
     name: string;
     profile_picture: string;
   } | null;
-  setUser: (user: { id: string; email: string; name: string,profile_picture:string}) => void;
+  setUser: (user: { id: string; email: string; name: string, profile_picture: string }) => void;
   clearUser: () => void;
 }
 

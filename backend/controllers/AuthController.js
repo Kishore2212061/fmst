@@ -17,7 +17,8 @@ async function loginUser(req, res, db) {
   try {
     const query = "SELECT * FROM users WHERE email = ?";
     const [users] = await db.execute(query, [email]);
-    if (users.length === 0) return res.status(401).json({ error: "Invalid credentials" });
+    if (users.length === 0)
+      return res.status(401).json({ error: "Invalid credentials" });
 
     const user = users[0];
     const isMatch = await bcrypt.compare(password, user.password);

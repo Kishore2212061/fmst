@@ -202,11 +202,10 @@ const FacultyDetailsDisplay: React.FC<FacultyDetailsDisplayProps> = ({ facultyDa
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-3 rounded-t-lg font-medium transition-all duration-300 ${
-              activeTab === tab.id
+            className={`flex items-center gap-2 px-4 py-3 rounded-t-lg font-medium transition-all duration-300 ${activeTab === tab.id
                 ? `bg-gradient-to-r ${tab.color} text-white shadow-md`
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-            }`}
+              }`}
           >
             {tab.icon}
             {tab.label}

@@ -17,7 +17,7 @@ const ProfileForm: React.FC = () => {
   const { register, handleSubmit, watch, setValue } = useForm();
   const [step, setStep] = useState(0);
   const [visitedSteps, setVisitedSteps] = useState<number[]>([0]);
-  const [sameAsCurrent, setSameAsCurrent] = useState(() => 
+  const [sameAsCurrent, setSameAsCurrent] = useState(() =>
     JSON.parse(localStorage.getItem("sameAsCurrent") || "false")
   );
   const [isMobile, setIsMobile] = useState(false);
@@ -27,13 +27,13 @@ const ProfileForm: React.FC = () => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     // Initial check
     checkIfMobile();
-    
+
     // Add event listener
     window.addEventListener('resize', checkIfMobile);
-    
+
     // Cleanup
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
@@ -54,11 +54,11 @@ const ProfileForm: React.FC = () => {
       label: "Address Details",
       icon: FaHome,
       component: (
-        <AddressDetails 
-          sameAsCurrent={sameAsCurrent} 
-          setSameAsCurrent={setSameAsCurrent} 
-          register={register} 
-          setValue={setValue} 
+        <AddressDetails
+          sameAsCurrent={sameAsCurrent}
+          setSameAsCurrent={setSameAsCurrent}
+          register={register}
+          setValue={setValue}
         />
       ),
     },
@@ -66,11 +66,11 @@ const ProfileForm: React.FC = () => {
       label: "Permanent Address",
       icon: FaMapMarkerAlt,
       component: (
-        <PermanentAddress 
-          sameAsCurrent={sameAsCurrent} 
-          register={register} 
-          watch={watch} 
-          setValue={setValue} 
+        <PermanentAddress
+          sameAsCurrent={sameAsCurrent}
+          register={register}
+          watch={watch}
+          setValue={setValue}
         />
       ),
     },
@@ -82,11 +82,11 @@ const ProfileForm: React.FC = () => {
   ];
 
   // Computed Values
-  const progressPercentage = isMobile 
+  const progressPercentage = isMobile
     ? Math.min(((step + 1) / sections.length) * 100, 100)
     : Math.min(((step + 2) / sections.length) * 100, 100);
-    
-  const isLastStep = isMobile 
+
+  const isLastStep = isMobile
     ? step >= sections.length - 1
     : step >= sections.length - 2;
 
@@ -115,11 +115,10 @@ const ProfileForm: React.FC = () => {
           return (
             <motion.div
               key={index}
-              className={`w-2 h-2 rounded-full ${
-                visitedSteps.includes(stepIndex) 
-                  ? "bg-indigo-600" 
+              className={`w-2 h-2 rounded-full ${visitedSteps.includes(stepIndex)
+                  ? "bg-indigo-600"
                   : "bg-gray-200"
-              }`}
+                }`}
               initial={false}
               animate={{ scale: index === step || (!isMobile && index === step + 1) ? 1.2 : 1 }}
             />
@@ -131,40 +130,39 @@ const ProfileForm: React.FC = () => {
 
   const NavigationTabs = () => (
     <div className="md:px-6 md:pb-4 md:flex md:justify-start md:space-x-2">
-    <div className="flex overflow-x-auto scrollbar-hide py-2 px-3 md:px-0 md:pb-4 w-full md:w-auto space-x-2">
-      {sections.map((section, index) => {
-        const Icon = section.icon;
-        const sectionStep = isMobile ? index : Math.floor(index / 2) * 2;
-        const isVisited = visitedSteps.includes(sectionStep);
-        const isCurrent = sectionStep === step;
-  
-        return (
-          <button
-            key={index}
-            type="button"
-            onClick={() => handleStepChange(sectionStep)}
-            className={`flex-shrink-0 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
-              isCurrent
-                ? "bg-indigo-600 text-white shadow-lg"
-                : isVisited
-                ? "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
-                : "text-gray-400 hover:bg-gray-50 cursor-not-allowed"
-            }`}
-            disabled={!isVisited && sectionStep !== (isMobile ? step + 1 : step + 2)}
-          >
-            <Icon className="w-4 h-4 md:w-5 md:h-5" />
-            <span className="whitespace-nowrap text-sm md:text-base font-medium">{section.label}</span>
-            {isVisited && (
-              <CheckCircle 
-                className={`w-3 h-3 md:w-4 md:h-4 ${isCurrent ? "text-white" : "text-green-500"} ml-1`} 
-              />
-            )}
-          </button>
-        );
-      })}
+      <div className="flex overflow-x-auto scrollbar-hide py-2 px-3 md:px-0 md:pb-4 w-full md:w-auto space-x-2">
+        {sections.map((section, index) => {
+          const Icon = section.icon;
+          const sectionStep = isMobile ? index : Math.floor(index / 2) * 2;
+          const isVisited = visitedSteps.includes(sectionStep);
+          const isCurrent = sectionStep === step;
+
+          return (
+            <button
+              key={index}
+              type="button"
+              onClick={() => handleStepChange(sectionStep)}
+              className={`flex-shrink-0 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${isCurrent
+                  ? "bg-indigo-600 text-white shadow-lg"
+                  : isVisited
+                    ? "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
+                    : "text-gray-400 hover:bg-gray-50 cursor-not-allowed"
+                }`}
+              disabled={!isVisited && sectionStep !== (isMobile ? step + 1 : step + 2)}
+            >
+              <Icon className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="whitespace-nowrap text-sm md:text-base font-medium">{section.label}</span>
+              {isVisited && (
+                <CheckCircle
+                  className={`w-3 h-3 md:w-4 md:h-4 ${isCurrent ? "text-white" : "text-green-500"} ml-1`}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
-  </div>
-  
+
   );
 
   return (
@@ -172,9 +170,9 @@ const ProfileForm: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className=" bg-gradient-to-br from-indigo-50 via-white to-purple-50 md:p-0.5"
-      >
+    >
       <motion.form
-        initial={{ y: 20 }} 
+        initial={{ y: 20 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
         onSubmit={handleSubmit(onSubmit)}
@@ -188,21 +186,21 @@ const ProfileForm: React.FC = () => {
 
         {/* Navigation & Progress */}
         <nav className="border-b border-gray-100 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
-  <div className="px-3 sm:px-4 md:px-6 py-3 md:py-5">
-    <ProgressIndicator />
-    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-      <motion.div
-        className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
-        initial={{ width: "0%" }}
-        animate={{ width: `${progressPercentage}%` }}
-        transition={{ duration: 0.3 }}
-      />
-    </div>
-  </div>
-  <div className="overflow-x-auto whitespace-nowrap">
-    <NavigationTabs />
-  </div>
-</nav>
+          <div className="px-3 sm:px-4 md:px-6 py-3 md:py-5">
+            <ProgressIndicator />
+            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
+                initial={{ width: "0%" }}
+                animate={{ width: `${progressPercentage}%` }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+          </div>
+          <div className="overflow-x-auto whitespace-nowrap">
+            <NavigationTabs />
+          </div>
+        </nav>
 
 
         {/* Form Content */}
@@ -214,9 +212,8 @@ const ProfileForm: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className={`grid grid-cols-1 ${
-                !isMobile && !isLastStep ? "md:grid-cols-2" : "md:grid-cols-1"
-              } gap-6 md:gap-8`}
+              className={`grid grid-cols-1 ${!isMobile && !isLastStep ? "md:grid-cols-2" : "md:grid-cols-1"
+                } gap-6 md:gap-8`}
             >
               {sections[step].component}
               {!isMobile && sections[step + 1] && sections[step + 1].component}
@@ -230,11 +227,10 @@ const ProfileForm: React.FC = () => {
             <motion.button
               type="button"
               onClick={() => handleStepChange(step - (isMobile ? 1 : 2))}
-              className={`flex items-center space-x-1 md:space-x-2 px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium transition-all ${
-                step > 0
+              className={`flex items-center space-x-1 md:space-x-2 px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium transition-all ${step > 0
                   ? "bg-white text-gray-700 shadow-md hover:shadow-lg"
                   : "opacity-0 pointer-events-none"
-              }`}
+                }`}
               initial={false}
               animate={{ opacity: step > 0 ? 1 : 0 }}
             >
@@ -242,55 +238,55 @@ const ProfileForm: React.FC = () => {
               <span>Previous</span>
             </motion.button>
 
-<motion.button
-  type="button"
-  onClick={() => {
-    if (isLastStep) {
-      saveUserData()
-        .then(() => {
-          toast.success("✅ Profile saved successfully!", {
-            duration: 4000,
-            style: {
-              fontSize: "18px",
-              padding: "16px",
-              borderRadius: "8px",
-              background: "#059669",
-              color: "#fff",
-            },
-          });
-        })
-        .catch(() => {
-          toast.error("❌ Failed to save profile. Try again.", {
-            duration: 4000,
-            style: {
-              fontSize: "18px",
-              padding: "16px",
-              borderRadius: "8px",
-              background: "#dc2626",
-              color: "#fff",
-            },
-          });
-        });
-    } else {
-      handleStepChange(step + (isMobile ? 1 : 2));
-    }
-  }}
-  className="flex items-center space-x-1 md:space-x-2 px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium text-white shadow-md hover:shadow-lg transition-all"
-  style={{
-    background: isLastStep
-      ? "linear-gradient(to right, #059669, #10b981)"
-      : "linear-gradient(to right, #4f46e5, #7c3aed)",
-  }}
-  whileHover={{ scale: 1.02 }}
-  whileTap={{ scale: 0.98 }}
->
-  <span>{isLastStep ? "Save Profile" : "Next"}</span>
-  {isLastStep ? (
-    <Save className="w-4 h-4 md:w-5 md:h-5" />
-  ) : (
-    <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
-  )}
-</motion.button>
+            <motion.button
+              type="button"
+              onClick={() => {
+                if (isLastStep) {
+                  saveUserData()
+                    .then(() => {
+                      toast.success("✅ Profile saved successfully!", {
+                        duration: 4000,
+                        style: {
+                          fontSize: "18px",
+                          padding: "16px",
+                          borderRadius: "8px",
+                          background: "#059669",
+                          color: "#fff",
+                        },
+                      });
+                    })
+                    .catch(() => {
+                      toast.error("❌ Failed to save profile. Try again.", {
+                        duration: 4000,
+                        style: {
+                          fontSize: "18px",
+                          padding: "16px",
+                          borderRadius: "8px",
+                          background: "#dc2626",
+                          color: "#fff",
+                        },
+                      });
+                    });
+                } else {
+                  handleStepChange(step + (isMobile ? 1 : 2));
+                }
+              }}
+              className="flex items-center space-x-1 md:space-x-2 px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium text-white shadow-md hover:shadow-lg transition-all"
+              style={{
+                background: isLastStep
+                  ? "linear-gradient(to right, #059669, #10b981)"
+                  : "linear-gradient(to right, #4f46e5, #7c3aed)",
+              }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span>{isLastStep ? "Save Profile" : "Next"}</span>
+              {isLastStep ? (
+                <Save className="w-4 h-4 md:w-5 md:h-5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+              )}
+            </motion.button>
 
 
           </div>

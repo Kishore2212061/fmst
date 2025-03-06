@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleLogout = async (userId:string)=> {
+  const handleLogout = async (userId: string) => {
     const localStorageData = { ...localStorage };
 
     try {
@@ -111,19 +111,19 @@ const HomePage: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({userId,localStorageData }),
+        body: JSON.stringify({ userId, localStorageData }),
       });
-      
+
       localStorage.clear(); // Clear localStorage on logout
       console.log("LocalStorage data saved to DB & cleared locally.");
-      
+
       navigate("/login"); // Redirect to login
     } catch (error) {
       console.error("Error saving localStorage to DB:", error);
     }
     navigate("/");
   };
-  
+
   // Function to fetch faculty details
   const fetchFacultyDetails = async (): Promise<void> => {
     if (!user?.id) return;
@@ -398,8 +398,8 @@ const HomePage: React.FC = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   className={`w-full flex items-center space-x-3 sm:space-x-4 px-3 sm:px-5 py-3 sm:py-4 rounded-xl transition-all duration-300 ${activeComponent === item.id
-                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
+                    : 'text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   <span>
@@ -413,10 +413,10 @@ const HomePage: React.FC = () => {
 
           {/* Logout Button */}
           <div className="p-4 sm:p-6 mt-auto border-t border-gray-100">
-          <button
-  onClick={() => user?.id && handleLogout(user.id)}
-  className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-5 py-3 sm:py-4 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
->
+            <button
+              onClick={() => user?.id && handleLogout(user.id)}
+              className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-5 py-3 sm:py-4 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
+            >
 
 
               <LogOut className="w-5 h-5" />

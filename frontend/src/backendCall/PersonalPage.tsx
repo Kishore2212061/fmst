@@ -12,8 +12,8 @@ interface LocalData {
   community?: string;
   caste?: string;
   currentAddress?: string;
-  curentCountry_id?:number;
-  permanentCountry_id?:number;
+  curentCountry_id?: number;
+  permanentCountry_id?: number;
   selectedState?: { id: number };
   selectedDistrict?: { id: number };
   selectedTaluk?: { id: number };
@@ -25,8 +25,8 @@ interface LocalData {
   designation?: string;
   employment_type?: string;
   employment_number?: string;
-  emergencyEmail?:string;
-  emergencyMobile?:string;
+  emergencyEmail?: string;
+  emergencyMobile?: string;
   jdob?: string;
   rdob?: string;
   anniversaryDate?: string;
@@ -52,9 +52,9 @@ interface UserState {
 
 interface CurrentDistrictState {
   id: number;
- name: string ;
+  name: string;
 }
-interface bank{
+interface bank {
   account_number: string;
   account_type: string;
   bank_name: string;
@@ -73,11 +73,11 @@ const getIdFromName = (name: string, key: string): number | null => {
 
 
 const getIdFromTypeName = (type_name: string, key: string): number | null => {
-    const storedData: { id: number; type_name: string }[] = JSON.parse(localStorage.getItem(key) || "[]");
-    const item = storedData.find((item) => item.type_name === type_name);
-    return item ? item.id : null;
-     
-  };
+  const storedData: { id: number; type_name: string }[] = JSON.parse(localStorage.getItem(key) || "[]");
+  const item = storedData.find((item) => item.type_name === type_name);
+  return item ? item.id : null;
+
+};
 
 
 const calculateAge = (dob: string | undefined): number | null => {

@@ -18,53 +18,53 @@ const AuthPage = () => {
     const url = isRegister ? "http://localhost:5000/auth/register" : "http://localhost:5000/auth/login";
 
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-        const data = await response.json();
-        console.log(data);
+      const data = await response.json();
+      console.log(data);
 
-        if (response.ok) {
-            if (isRegister) {
-                setIsRegister(false);
-                setFormData({ name: "", email: "", password: "" });
-                alert("Registration successful! Please login.");
-            } else {
-                setUser({
-                    id: data.user.id,
-                    email: data.user.email,
-                    name: data.user.name,
-                    profile_picture: data.user.profile_picture
-                });
-
-                localStorage.setItem("token", data.token);
-
-                // Fetch and restore localStorage data from SQL
-                const storageResponse = await fetch(`http://localhost:5000/api/getLocalStorage/${data.user.id}`);
-                const storageData = await storageResponse.json();
-
-                if (storageData.localStorageData) {
-                    Object.entries(storageData.localStorageData).forEach(([key, value]) => {
-                        localStorage.setItem(key, String(value)); // Explicitly convert value to string
-                    });
-                    console.log("LocalStorage restored from database!");
-                }
-
-                navigate("/home");
-            }
+      if (response.ok) {
+        if (isRegister) {
+          setIsRegister(false);
+          setFormData({ name: "", email: "", password: "" });
+          alert("Registration successful! Please login.");
         } else {
-            alert(data.message || "An error occurred");
+          setUser({
+            id: data.user.id,
+            email: data.user.email,
+            name: data.user.name,
+            profile_picture: data.user.profile_picture
+          });
+
+          localStorage.setItem("token", data.token);
+
+          // Fetch and restore localStorage data from SQL
+          const storageResponse = await fetch(`http://localhost:5000/api/getLocalStorage/${data.user.id}`);
+          const storageData = await storageResponse.json();
+
+          if (storageData.localStorageData) {
+            Object.entries(storageData.localStorageData).forEach(([key, value]) => {
+              localStorage.setItem(key, String(value)); // Explicitly convert value to string
+            });
+            console.log("LocalStorage restored from database!");
+          }
+
+          navigate("/home");
         }
+      } else {
+        alert(data.message || "An error occurred");
+      }
     } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again.");
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
     }
-};
+  };
 
 
 
@@ -82,8 +82,8 @@ const AuthPage = () => {
               {isRegister ? "Create Account" : "Welcome Back"}
             </h2>
             <p className="text-blue-100 text-center mt-2">
-              {isRegister 
-                ? "Sign up to get started with your account" 
+              {isRegister
+                ? "Sign up to get started with your account"
                 : "Sign in to continue your journey"}
             </p>
           </div>
@@ -105,7 +105,7 @@ const AuthPage = () => {
                   />
                 </div>
               )}
-              
+
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input

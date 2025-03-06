@@ -40,13 +40,13 @@ const useDesignationStore = create<DesignationStore>((set) => {
       details: storedDetails
         ? JSON.parse(storedDetails)
         : {
-            designation: "Professor",
-            employment_type: "Full-Time",
-            employment_number: "",
-            pan: "",
-            aadhar: "",
-            passport_number: "",
-          },
+          designation: "Professor",
+          employment_type: "Full-Time",
+          employment_number: "",
+          pan: "",
+          aadhar: "",
+          passport_number: "",
+        },
     });
   };
 

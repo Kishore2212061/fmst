@@ -63,22 +63,22 @@ export const useStore = create<State>((set) => ({
       const res = await axios.put(`http://localhost:5000/api/relationships/${id}`, data, {
         headers: { "Content-Type": "application/json" },
       });
-  
+
       const updatedRelationship = res.data;
-      
+
       set((state) => {
         const updatedRelationships = state.relationships.map((rel) =>
           rel.id === id ? { ...rel, ...data, ...updatedRelationship } : rel
         );
         console.log("Updated relationships after update:", updatedRelationships);
         return { relationships: updatedRelationships };
-            });
-  
+      });
+
     } catch (error) {
       console.error("Error updating relationship:", error);
     }
   },
-  
+
 
   deleteRelationship: async (id) => {
     try {

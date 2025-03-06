@@ -20,7 +20,7 @@ const useBloodGroupStore = create<BloodGroupStore>((set) => {
         const response = await axios.get("http://localhost:5000/api/blood-groups");
         const bloodGroups = response.data || [];
 
-        localStorage.setItem("bloodGroups", JSON.stringify(bloodGroups)); 
+        localStorage.setItem("bloodGroups", JSON.stringify(bloodGroups));
         set({ bloodGroups });
       } catch (error) {
         console.error("Error fetching blood groups:", error);

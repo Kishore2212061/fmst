@@ -35,14 +35,14 @@ const useBankStore = create<BankStore>((set) => {
       bankDetails: storedBankDetails
         ? JSON.parse(storedBankDetails)
         : {
-            account_number: "",
-            account_type: "Savings",
-            bank_name: "",
-            bank_address: "",
-            ifsc_code: "",
-            branch_code: "",
-            micr_code: "",
-          },
+          account_number: "",
+          account_type: "Savings",
+          bank_name: "",
+          bank_address: "",
+          ifsc_code: "",
+          branch_code: "",
+          micr_code: "",
+        },
     });
   };
 

@@ -8,7 +8,7 @@ interface DropdownStore {
   name: string;
   dob: string;
   jdob: string; // Job Date of Birth
-  rdob: string; 
+  rdob: string;
   fetchDropdowns: () => void;
   rehydrateState: () => void;
   setName: (name: string) => void;
@@ -47,7 +47,7 @@ const useDropdownStore = create<DropdownStore>((set) => {
     dob: "",
     jdob: "",
     rdob: "",
-  
+
     fetchDropdowns: async () => {
       try {
         const [salutationsRes, gendersRes, maritalStatusesRes] = await Promise.all([

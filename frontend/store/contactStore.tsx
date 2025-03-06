@@ -23,7 +23,7 @@ export const useContactStore = create<ContactState>()(
       setContactInfo: (info) => set((state) => ({ ...state, ...info })),
     }),
     {
-      name: "contact-storage", 
+      name: "contact-storage",
     }
   )
 );

@@ -187,7 +187,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ register, watch, setValue }
             type="date"
             {...register("rdob")}
             className="border p-2 text-sm rounded w-full focus:ring-2 focus:ring-blue-400 disabled:bg-gray-200"
-            disabled/>
+            disabled />
         </div>
       </div>
       <div>

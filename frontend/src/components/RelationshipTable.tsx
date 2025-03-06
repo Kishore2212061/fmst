@@ -114,8 +114,8 @@ const RelationshipTable = ({ user_id }: Props) => {
                         <button
                           onClick={() => handleDelete(r.id)}
                           className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md ${isConfirmingDelete === r.id
-                              ? "text-red-700 bg-red-100 hover:bg-red-200"
-                              : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                            ? "text-red-700 bg-red-100 hover:bg-red-200"
+                            : "text-gray-700 bg-gray-100 hover:bg-gray-200"
                             } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500`}
                         >
                           <Trash2 className="h-3.5 w-3.5 mr-1" />
@@ -169,8 +169,8 @@ const RelationshipTable = ({ user_id }: Props) => {
                     <button
                       onClick={() => handleDelete(r.id)}
                       className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md ${isConfirmingDelete === r.id
-                          ? "text-red-700 bg-red-100 hover:bg-red-200"
-                          : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                        ? "text-red-700 bg-red-100 hover:bg-red-200"
+                        : "text-gray-700 bg-gray-100 hover:bg-gray-200"
                         } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500`}
                     >
                       <Trash2 className="h-3.5 w-3.5 mr-1" />
