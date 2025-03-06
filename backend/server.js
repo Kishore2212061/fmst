@@ -7,12 +7,14 @@ const facultySubmitRoutes = require("./routes/facultySubmitRoutes");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" })); // Keep only this one
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 initializeDB().then((db) => {
   app.use("/auth", authRoutes(db));
   app.use("/api", dropdownRoutes(db));
   app.use("/ap", facultySubmitRoutes(db));
+
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {

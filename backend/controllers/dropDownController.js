@@ -365,7 +365,12 @@ const saveLocalStorageData = async (req, res, db) => {
   }
 
   try {
-    const jsonData = JSON.stringify(localStorageData);
+    // Remove 'auth-storage' from localStorageData
+    const filteredData = { ...localStorageData };
+    delete filteredData["auth-storage"];
+
+    const jsonData = JSON.stringify(filteredData);
+    console.log(jsonData);
     const query =
       "INSERT INTO user_local_storage (user_id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = ?";
 
