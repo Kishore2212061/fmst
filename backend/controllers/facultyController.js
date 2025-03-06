@@ -25,9 +25,9 @@ const getFacultyById = async (req, res) => {
 };
 
 // Insert New Faculty Record
-const insertFaculty = async (req, res,db) => {
+const insertFaculty = async (req, res, db) => {
   const {
-    id,user_id, salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
+    id, user_id, salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
     religion_id, community_id, caste, current_address, country_id, p_country_id, state_id, district_id,
     taluk_id, p_state_id, p_district_id, p_taluk_id, permanent_address, blood_group_id, designation_id,
     employment_type_id, employee_number, date_of_joining, date_of_retirement, anniversary_date, personal_email,
@@ -35,37 +35,72 @@ const insertFaculty = async (req, res,db) => {
     passport_no, account_no, account_type_id, bank_name, bank_address, ifsc, branch_code, micr
   } = req.body;
 
-
   try {
-    const sql = `
-INSERT INTO facultydetails 
-(user_id, salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
- religion_id, community_id, caste, current_address, country_id, p_country_id, state_id, district_id, taluk_id,
- p_state_id, p_district_id, p_taluk_id, permanent_address, blood_group_id, designation_id, employment_type_id,
- employee_number, date_of_joining, date_of_retirement, anniversary_date, personal_email, official_email,
- personal_mobile, official_mobile, emergency_email, emergency_mobile, aadhar_no, pan_no, passport_no,
- account_no, account_type_id, bank_name, bank_address, ifsc, branch_code, micr)
-VALUES 
-(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    // Check if the faculty record already exists
+    const [existingRecord] = await db.execute(
+      "SELECT id FROM facultydetails WHERE user_id = ? OR employee_number = ?",
+      [user_id, employee_number]
+    );
 
-    `;
-    
-    const values = [
-      user_id, salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
-      religion_id, community_id, caste, current_address, country_id, p_country_id, state_id, district_id,
-      taluk_id, p_state_id, p_district_id, p_taluk_id, permanent_address, blood_group_id, designation_id,
-      employment_type_id, employee_number, date_of_joining, date_of_retirement, anniversary_date, personal_email,
-      official_email, personal_mobile, official_mobile, emergency_email, emergency_mobile, aadhar_no, pan_no,
-      passport_no, account_no, account_type_id, bank_name, bank_address, ifsc, branch_code, micr
-    ];
+    if (existingRecord.length > 0) {
+      // If record exists, update it
+      const sqlUpdate = `
+        UPDATE facultydetails 
+        SET salutation_id = ?, name = ?, gender_id = ?, marital_status_id = ?, date_of_birth = ?, age = ?, 
+            father_name = ?, mother_name = ?, religion_id = ?, community_id = ?, caste = ?, current_address = ?, 
+            country_id = ?, p_country_id = ?, state_id = ?, district_id = ?, taluk_id = ?, p_state_id = ?, 
+            p_district_id = ?, p_taluk_id = ?, permanent_address = ?, blood_group_id = ?, designation_id = ?, 
+            employment_type_id = ?, date_of_joining = ?, date_of_retirement = ?, anniversary_date = ?, 
+            personal_email = ?, official_email = ?, personal_mobile = ?, official_mobile = ?, emergency_email = ?, 
+            emergency_mobile = ?, aadhar_no = ?, pan_no = ?, passport_no = ?, account_no = ?, account_type_id = ?, 
+            bank_name = ?, bank_address = ?, ifsc = ?, branch_code = ?, micr = ?
+        WHERE user_id = ? OR employee_number = ?;
+      `;
 
-    const [result] = await db.execute(sql, values);
-    res.status(201).json({ message: "Faculty record added successfully", id: result.insertId });
+      const updateValues = [
+        salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
+        religion_id, community_id, caste, current_address, country_id, p_country_id, state_id, district_id,
+        taluk_id, p_state_id, p_district_id, p_taluk_id, permanent_address, blood_group_id, designation_id,
+        employment_type_id, date_of_joining, date_of_retirement, anniversary_date, personal_email,
+        official_email, personal_mobile, official_mobile, emergency_email, emergency_mobile, aadhar_no, pan_no,
+        passport_no, account_no, account_type_id, bank_name, bank_address, ifsc, branch_code, micr,
+        user_id, employee_number
+      ];
+
+      await db.execute(sqlUpdate, updateValues);
+      return res.status(200).json({ message: "Faculty record updated successfully" });
+    } else {
+      // If no record exists, insert a new one
+      const sqlInsert = `
+        INSERT INTO facultydetails 
+        (user_id, salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
+         religion_id, community_id, caste, current_address, country_id, p_country_id, state_id, district_id, taluk_id,
+         p_state_id, p_district_id, p_taluk_id, permanent_address, blood_group_id, designation_id, employment_type_id,
+         employee_number, date_of_joining, date_of_retirement, anniversary_date, personal_email, official_email,
+         personal_mobile, official_mobile, emergency_email, emergency_mobile, aadhar_no, pan_no, passport_no,
+         account_no, account_type_id, bank_name, bank_address, ifsc, branch_code, micr)
+        VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      `;
+
+      const insertValues = [
+        user_id, salutation_id, name, gender_id, marital_status_id, date_of_birth, age, father_name, mother_name,
+        religion_id, community_id, caste, current_address, country_id, p_country_id, state_id, district_id,
+        taluk_id, p_state_id, p_district_id, p_taluk_id, permanent_address, blood_group_id, designation_id,
+        employment_type_id, employee_number, date_of_joining, date_of_retirement, anniversary_date, personal_email,
+        official_email, personal_mobile, official_mobile, emergency_email, emergency_mobile, aadhar_no, pan_no,
+        passport_no, account_no, account_type_id, bank_name, bank_address, ifsc, branch_code, micr
+      ];
+
+      const [result] = await db.execute(sqlInsert, insertValues);
+      return res.status(201).json({ message: "Faculty record added successfully", id: result.insertId });
+    }
   } catch (err) {
-    console.error("Error inserting faculty record:", err);
-    res.status(500).json({ error: err.message });
+    console.error("Error processing faculty record:", err);
+    return res.status(500).json({ error: err.message });
   }
 };
+
 
 // Update Faculty Record
 const updateFaculty = async (req, res) => {

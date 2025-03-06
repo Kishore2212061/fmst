@@ -121,6 +121,63 @@ const getEmploymentType = async (req, res, db) => {
 };
 
 
+const uploadProfilePicture = async (req, res,db) => {
+  try {
+    const userId = req.params.userId;
+    
+    // Check if userId is missing
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Check if file is missing
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const imageData = req.file.buffer; // Binary image data
+
+    // Debugging logs
+    console.log("Uploading profile picture for User ID:", userId);
+    console.log("Image data length:", imageData.length || "No image data");
+
+    // Check if imageData is undefined
+    if (!imageData) {
+      return res.status(400).json({ message: "Invalid file data" });
+    }
+
+    // Store image as BLOB in MySQL
+    await db.execute("UPDATE users SET profile_picture = ? WHERE id = ?", [imageData, userId]);
+
+    res.json({ message: "Profile picture uploaded successfully" });
+
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ message: "Database error", error: err.message });
+  }
+};
+
+const getProfilePicture = async (req, res,db) => {
+  try {
+    const userId = req.params.userId;
+
+    // Fetch image data from MySQL
+    const [result] = await db.execute("SELECT profile_picture FROM users WHERE id = ?", [userId]);
+
+    if (!result.length || !result[0].profile_picture) {
+      return res.status(404).json({ message: "No profile picture found" });
+    }
+
+    res.setHeader("Content-Type", "image/jpeg"); // Adjust MIME type as needed
+    res.send(result[0].profile_picture); // Send binary image data
+
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ message: "Database error", error: err.message });
+  }
+};
+
+
 const getFacultyDetails = async (req, res, db) => {
   const userId = parseInt(req.params.userId);
   
@@ -275,6 +332,47 @@ const deleteRelationship = async (req, res, db) => {
   }
 };
 
+const saveLocalStorageData = async (req, res, db) => {
+  const { userId, localStorageData } = req.body;
+  
+  if (!userId || !localStorageData) {
+    return res.status(400).json({ error: 'Invalid user ID or data' });
+  }
+
+  try {
+    const jsonData = JSON.stringify(localStorageData);
+    const query = 'INSERT INTO user_local_storage (user_id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = ?';
+    
+    await db.execute(query, [userId, jsonData, jsonData]);
+    res.json({ message: 'LocalStorage data saved successfully' });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getLocalStorageData = async (req, res, db) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
+
+  try {
+    const [results] = await db.execute('SELECT data FROM user_local_storage WHERE user_id = ?', [userId]);
+
+    if (results.length > 0) {
+      res.json({ localStorageData: JSON.parse(results[0].data) });
+    } else {
+      res.json({ localStorageData: {} });
+    }
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 
 module.exports = { 
   getSalutations, 
@@ -293,5 +391,8 @@ module.exports = {
  createRelationship,
  getRelationshipsByUserId,
  updateRelationship,
- deleteRelationship
+ deleteRelationship,
+ uploadProfilePicture, getProfilePicture,
+ saveLocalStorageData,
+ getLocalStorageData
 };

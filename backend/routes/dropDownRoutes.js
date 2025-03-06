@@ -3,7 +3,14 @@ const router = express.Router();
 const { getSalutations, getGenders, getMaritalStatuses,getReligion,getBloodGroup,getDesignation,getStates,getDistricts,getTaluks,getCommunity,getAccountTypes,getEmploymentType,getFacultyDetails,  createRelationship,
   getRelationshipsByUserId,
   updateRelationship,
-  deleteRelationship} = require("../controllers/dropDownController");
+  deleteRelationship, uploadProfilePicture, 
+  getProfilePicture,saveLocalStorageData,getLocalStorageData} = require("../controllers/dropDownController");
+
+
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ limits: { fileSize: 2 * 1024 * 1024 } }); // 2MB limit
+
 
 function dropDownRoutes(db) {
   router.get("/salutations", (req, res) => getSalutations(req,res,db));
@@ -23,6 +30,10 @@ router.get("/taluks/:districtId",(req, res) =>getTaluks(req,res,db));
   router.get("/relationships/:userId", (req, res) => getRelationshipsByUserId(req,res,db));
   router.put("/relationships/:id", (req, res) => updateRelationship(req,res,db));
   router.delete("/relationships/:id", (req, res) => deleteRelationship(req,res,db));
+  router.post("/upload/:userId", upload.single("image"), (req, res) => uploadProfilePicture(req, res, db));
+router.get("/user/:userId/image", (req, res) => getProfilePicture(req, res, db));
+router.post('/saveLocalStorage', (req, res) => saveLocalStorageData(req, res, db));
+router.get('/getLocalStorage/:userId', (req, res) => getLocalStorageData(req, res, db));
   return router;
 }
 

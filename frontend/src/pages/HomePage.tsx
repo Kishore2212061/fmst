@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FacultyDetailsDisplay from '../components/FacultyDetails';
-import { saveUserData } from "../backendCall/PersonalPage";
 import axios from "axios";
 import { FacultyData } from '../components/FacultyDetails';
 import {
@@ -14,6 +13,7 @@ import {
   BookOpen,
   LogOut,
   Menu,
+  Mail,
   X,
   ChevronRight,
   User,
@@ -22,6 +22,7 @@ import {
 import ProfileForm from "./ProfilePage";
 import { useAuthStore } from "../../store/useAuthStore";
 import RelationShipPage from './RelationshipPage';
+import { Toaster } from 'react-hot-toast';
 
 interface DashboardCardProps {
   title: string;
@@ -38,6 +39,7 @@ const HomePage: React.FC = () => {
   const [facultyData, setFacultyData] = useState<FacultyData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -50,9 +52,78 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (activeComponent === 'profile' && user?.id) {
       fetchFacultyDetails();
+      fetchProfileImage(user?.id);
     }
+    if (user?.id)
+      fetchProfileImage(user?.id);
+
   }, [activeComponent, user?.id]);
 
+
+  const fetchProfileImage = async (userId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/user/${userId}/image`, { responseType: "blob" });
+      const imageUrl = URL.createObjectURL(response.data);
+      console.log(imageUrl)
+      setImage(imageUrl);
+    } catch (error) {
+      console.error("Failed to fetch profile image", error);
+    }
+  };
+
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      alert("File size too large! Please select an image smaller than 5MB.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/upload/${user?.id}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      // Show uploaded image immediately
+      setImage(`http://localhost:5000/${data.filePath}`);
+      if (user?.id)
+        fetchProfileImage(user.id);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
+  const handleLogout = async (userId:string)=> {
+    const localStorageData = { ...localStorage };
+
+    try {
+      await fetch("http://localhost:5000/api/saveLocalStorage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({userId,localStorageData }),
+      });
+      
+      localStorage.clear(); // Clear localStorage on logout
+      console.log("LocalStorage data saved to DB & cleared locally.");
+      
+      navigate("/login"); // Redirect to login
+    } catch (error) {
+      console.error("Error saving localStorage to DB:", error);
+    }
+    navigate("/");
+  };
+  
   // Function to fetch faculty details
   const fetchFacultyDetails = async (): Promise<void> => {
     if (!user?.id) return;
@@ -75,7 +146,7 @@ const HomePage: React.FC = () => {
   const navItems = [
     { icon: <LayoutDashboard className="w-5 h-5" />, label: "Dashboard", id: 'dashboard' },
     { icon: <UserCircle className="w-5 h-5" />, label: "Profile", id: 'profile' },
-    { icon: <User className="w-5 h-5" />, label: "Relationships", id:'relationships' },
+    { icon: <User className="w-5 h-5" />, label: "Relationships", id: 'relationships' },
     { icon: <GraduationCap className="w-5 h-5" />, label: "Education", id: 'education' },
     { icon: <ScrollText className="w-5 h-5" />, label: "Events", id: 'events' },
     { icon: <BookOpen className="w-5 h-5" />, label: "Publications", id: 'publications' },
@@ -87,7 +158,7 @@ const HomePage: React.FC = () => {
       case 'profile':
         if (isLoading) {
           return (
-            <div className="flex justify-center items-center p-16">
+            <div className="flex justify-center items-center p-1 ">
               <div className="relative">
                 <div className="w-20 h-20 border-purple-200 border-4 rounded-full"></div>
                 <div className="w-20 h-20 border-indigo-600 border-t-4 animate-spin rounded-full absolute top-0 left-0"></div>
@@ -100,36 +171,36 @@ const HomePage: React.FC = () => {
         if (facultyData && !isEditing) {
           return (
             <div className="px-2 py-4 sm:px-6 lg:px-8">
-              <FacultyDetailsDisplay 
-                facultyData={facultyData} 
-                onEdit={() => setIsEditing(true)} 
+              <FacultyDetailsDisplay
+                facultyData={facultyData}
+                onEdit={() => setIsEditing(true)}
               />
             </div>
           );
         }
-        
+
         // If edit is touched or no data exists, go directly to ProfileForm
         return (
           <div className="px-2 py-4 sm:px-6 lg:px-8">
             <ProfileForm />
           </div>
         );
-        case 'relationships':
-          if (isLoading) {
-            return (
-              <div className="flex justify-center items-center p-16">
-                <div className="relative">
-                  <div className="w-20 h-20 border-purple-200 border-4 rounded-full"></div>
-                  <div className="w-20 h-20 border-indigo-600 border-t-4 animate-spin rounded-full absolute top-0 left-0"></div>
-                </div>
-              </div>
-            );
-          }
+      case 'relationships':
+        if (isLoading) {
           return (
-            <div className="px-2 py-4 sm:px-6 lg:px-8">
-              <RelationShipPage/>
+            <div className="flex justify-center items-center p-16">
+              <div className="relative">
+                <div className="w-20 h-20 border-purple-200 border-4 rounded-full"></div>
+                <div className="w-20 h-20 border-indigo-600 border-t-4 animate-spin rounded-full absolute top-0 left-0"></div>
+              </div>
             </div>
           );
+        }
+        return (
+          <div className="px-2 py-4 sm:px-6 lg:px-8">
+            <RelationShipPage />
+          </div>
+        );
       case 'dashboard':
         return (
           <div className="px-2 py-4 sm:px-6 lg:px-8">
@@ -138,28 +209,28 @@ const HomePage: React.FC = () => {
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">Dashboard Overview</h2>
                 <p className="text-gray-500">Manage your academic activities and track your progress</p>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-                <DashboardCard 
+                <DashboardCard
                   title="Recent Publications"
                   description="View and manage your latest research publications and academic papers"
                   bgColor="bg-gradient-to-br from-indigo-500 to-purple-600"
                   icon={<BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-white opacity-90" />}
                 />
-                <DashboardCard 
+                <DashboardCard
                   title="Journal Entries"
                   description="Track your journal submissions and review their current status"
                   bgColor="bg-gradient-to-br from-emerald-500 to-teal-600"
                   icon={<ScrollText className="w-8 h-8 sm:w-10 sm:h-10 text-white opacity-90" />}
                 />
-                <DashboardCard 
+                <DashboardCard
                   title="Education"
                   description="Manage your qualifications, certifications and academic achievements"
                   bgColor="bg-gradient-to-br from-amber-500 to-orange-600"
                   icon={<GraduationCap className="w-8 h-8 sm:w-10 sm:h-10 text-white opacity-90" />}
                 />
               </div>
-              
+
               <div className="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
                 <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300">
                   <h3 className="text-lg sm:text-xl font-bold text-indigo-800 mb-4">Recent Activities</h3>
@@ -177,7 +248,7 @@ const HomePage: React.FC = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300">
                   <h3 className="text-lg sm:text-xl font-bold text-indigo-800 mb-4">Quick Stats</h3>
                   <div className="grid grid-cols-2 gap-4">
@@ -242,7 +313,32 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
-      {/* Mobile Menu Button */}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          success: {
+            duration: 5000,
+            style: {
+              fontSize: "18px",
+              padding: "16px",
+              borderRadius: "8px",
+              background: "lightgreeen",
+              color: "#fff",
+            },
+          },
+          error: {
+            duration: 3000,
+            style: {
+              fontSize: "18px",
+              padding: "16px",
+              borderRadius: "8px",
+              background: "#dc2626",
+              color: "#fff",
+            },
+          },
+        }}
+      />      {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className="lg:hidden fixed top-8 right-4 z-50 p-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg text-white hover:shadow-xl transition-all duration-300"
@@ -258,19 +354,41 @@ const HomePage: React.FC = () => {
       `}>
         <div className="flex flex-col h-full">
           {/* User Profile Section */}
-          <div className="p-4 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-purple-50">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
-                <UserCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+          <div className="p-3 border-b border-gray-100">
+            <div className="flex flex-col items-center">
+              {/* Profile Image */}
+              <div className="relative group mb-3">
+                <label htmlFor="profileUpload" className="cursor-pointer block">
+                  <div className="w-39 h-39 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 border-4 border-white">
+                    {image ? (
+                      <img src={image} className="w-full h-full rounded-full object-cover" alt="Profile" />
+                    ) : (
+                      <UserCircle className="w-14 h-14 text-white" />
+                    )}
+                  </div>
+                  <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <UserCircle className="w-8 h-8 text-white" />
+                  </div>
+                </label>
+                <input type="file" id="profileUpload" className="hidden" accept="image/*" onChange={handleImageUpload} />
               </div>
-              <div className="min-w-0">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-800 truncate">{user?.name || "Faculty User"}</h2>
-                <p className="text-xs sm:text-sm text-gray-500 truncate">{user?.email || "faculty@example.com"}</p>
+
+              {/* User Info */}
+              <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <span>{user?.name?.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                  Faculty
+                </span>
+              </h2>
+              <div className="mt-2 flex items-center text-gray-600 gap-1.5">
+                <Mail className="w-4 h-4" />
+                <p className="text-sm">{user?.email}</p>
               </div>
             </div>
           </div>
 
-          <nav className="flex-1 p-4 sm:p-6 overflow-y-auto">
+          {/* Navigation */}
+          <nav className="flex-1 p-42 sm:p-6 overflow-y-auto">
             <div className="space-y-2 sm:space-y-3">
               {navItems.map((item) => (
                 <button
@@ -279,11 +397,10 @@ const HomePage: React.FC = () => {
                     setActiveComponent(item.id);
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center space-x-3 sm:space-x-4 px-3 sm:px-5 py-3 sm:py-4 rounded-xl transition-all duration-300 ${
-                    activeComponent === item.id 
-                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md' 
+                  className={`w-full flex items-center space-x-3 sm:space-x-4 px-3 sm:px-5 py-3 sm:py-4 rounded-xl transition-all duration-300 ${activeComponent === item.id
+                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
                       : 'text-gray-700 hover:bg-gray-50'
-                  }`}
+                    }`}
                 >
                   <span>
                     {item.icon}
@@ -296,10 +413,12 @@ const HomePage: React.FC = () => {
 
           {/* Logout Button */}
           <div className="p-4 sm:p-6 mt-auto border-t border-gray-100">
-            <button
-              onClick={() => saveUserData()}
-              className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-5 py-3 sm:py-4 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
-            >
+          <button
+  onClick={() => user?.id && handleLogout(user.id)}
+  className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-5 py-3 sm:py-4 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
+>
+
+
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Logout</span>
             </button>
@@ -310,13 +429,13 @@ const HomePage: React.FC = () => {
         <main className="flex-1 bg-gray-50 p-2 sm:p-6 overflow-x-hidden">
           <div className="max-w-7xl mx-auto">
             {renderComponent()}
-            
+
           </div>
         </main>
 
         <footer className="bg-white p-4 sm:p-6 text-center border-t border-gray-100">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
-            <p className="text-gray-500 text-xs sm:text-sm">© {new Date().getFullYear()} KishoreKumar_Shyam_Prem NEC. All rights reserved.</p>
+            <p className="text-gray-500 text-xs sm:text-sm">© {new Date().getFullYear()} KishoreKumar_Shyam_Prem_Karthik_NEC. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 sm:mt-0 text-xs sm:text-sm">
               <a href="#" className="text-indigo-600 hover:text-indigo-800 transition-colors">Privacy Policy</a>
               <a href="#" className="text-indigo-600 hover:text-indigo-800 transition-colors">Terms of Service</a>
@@ -326,7 +445,7 @@ const HomePage: React.FC = () => {
         </footer>
       </div>
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />

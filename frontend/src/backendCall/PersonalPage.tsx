@@ -54,6 +54,15 @@ interface CurrentDistrictState {
   id: number;
  name: string ;
 }
+interface bank{
+  account_number: string;
+  account_type: string;
+  bank_name: string;
+  bank_address: string;
+  ifsc_code: string;
+  branch_code: string;
+  micr_code: string;
+}
 
 
 const getIdFromName = (name: string, key: string): number | null => {
@@ -80,6 +89,9 @@ const calculateAge = (dob: string | undefined): number | null => {
 
 export const saveUserData = async (): Promise<void> => {
   const localData: LocalData = JSON.parse(localStorage.getItem("designationDetails") || "{}");
+  const localDatas: bank = JSON.parse(localStorage.getItem("bank_details") || "{}");
+  const permanent_address1 = localStorage.getItem("permanentAddress") || "null";
+  const current_address2 = localStorage.getItem("currentAddress") || "null";
   const userState: { state: UserState } = JSON.parse(localStorage.getItem("auth-storage") || "{}");
   const currentDistrict: CurrentDistrictState = JSON.parse(localStorage.getItem("selectedDistrict") || "{}");
   const currentState: CurrentDistrictState = JSON.parse(localStorage.getItem("selectedState") || "{}");
@@ -107,7 +119,7 @@ export const saveUserData = async (): Promise<void> => {
     religion_id: localData.religion ? Number(getIdFromName(localData.religion, "religions")) : null,
     community_id: localData.community ? Number(getIdFromName(localData.community, "community")) : null,
     caste: localData.caste || "",
-    current_address: localData.currentAddress || "",
+    current_address: current_address2 || "",
     country_id: Number(localData.curentCountry_id) || 1,
     p_country_id: Number(localData.permanentCountry_id) || 1,
     state_id: currentState?.id ? Number(currentState.id) : null,
@@ -116,7 +128,7 @@ export const saveUserData = async (): Promise<void> => {
     p_state_id: pcurrentState?.id ? Number(pcurrentState.id) : null,
     p_district_id: pcurrentDistrict?.id ? Number(pcurrentDistrict.id) : null,
     p_taluk_id: pcurrentTaluk?.id ? Number(pcurrentTaluk.id) : null,
-    permanent_address: localData.permanentAddress || null,
+    permanent_address: permanent_address1 || null,
     blood_group_id: localData.bloodGroup ? Number(getIdFromName(localData.bloodGroup, "bloodGroups")) : null,
     designation_id: localData.designation ? Number(getIdFromName(localData.designation, "designations")) : null,
     employment_type_id: localData.employment_type ? Number(getIdFromTypeName(localData.employment_type, "employmentTypes")) : null,
@@ -133,13 +145,13 @@ export const saveUserData = async (): Promise<void> => {
     aadhar_no: localData.aadhar || "",
     pan_no: localData.pan || "",
     passport_no: localData.passport_number || "",
-    account_no: localData.account_number || "",
-    account_type_id: localData.account_type ? Number(getIdFromTypeName(localData.account_type, "account_types")) : null,
-    bank_name: localData.bank_name || "",
-    bank_address: localData.bank_address || "",
-    ifsc: localData.ifsc_code || "",
-    branch_code: localData.branch_code || "",
-    micr: localData.micr_code || "",
+    account_no: localDatas.account_number || "",
+    account_type_id: localDatas.account_type ? Number(getIdFromTypeName(localDatas.account_type, "account_types")) : null,
+    bank_name: localDatas.bank_name || "",
+    bank_address: localDatas.bank_address || "",
+    ifsc: localDatas.ifsc_code || "",
+    branch_code: localDatas.branch_code || "",
+    micr: localDatas.micr_code || "",
   };
 
   try {

@@ -27,7 +27,8 @@ export const usePermanentAddressStore = create<PermanentAddressStore>((set) => {
     const storedState = localStorage.getItem("permanentState");
     const storedDistrict = localStorage.getItem("permanentDistrict");
     const storedTaluk = localStorage.getItem("permanentTaluk");
-    const storedAddress = localStorage.getItem("PermanentAddress") || "";
+    const storedAddress = localStorage.getItem("permanentAddress") || "";
+    console.log(storedAddress);
 
     set({
       selectedCountry: storedCountry,
@@ -81,7 +82,7 @@ export const usePermanentAddressStore = create<PermanentAddressStore>((set) => {
     },
 
     setPermanentAddress: (address) => {
-      localStorage.setItem("PermanentAddress", address); 
+      localStorage.setItem("permanentAddress", address); 
       set({ permanentAddress: address });
     },
 

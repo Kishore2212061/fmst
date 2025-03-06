@@ -20,6 +20,7 @@ const PermanentAddress: React.FC<PermanentAddressProps> = ({
     selectedState: currentState,
     selectedDistrict: currentDistrict,
     selectedTaluk: currentTaluk,
+    currentAddress:address,
   } = useAddressStore();
 
   const {
@@ -68,7 +69,7 @@ const PermanentAddress: React.FC<PermanentAddressProps> = ({
 
   useEffect(() => {
     if (sameAsCurrent) {
-      setValue("permanentAddress", currentAddress);
+      setValue("permanentAddress",address);
       setPermanentState(currentState);
       setPermanentDistrict(currentDistrict);
       setPermanentTaluk(currentTaluk);

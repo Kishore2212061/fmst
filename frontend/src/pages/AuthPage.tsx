@@ -18,35 +18,55 @@ const AuthPage = () => {
     const url = isRegister ? "http://localhost:5000/auth/register" : "http://localhost:5000/auth/login";
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
 
-      const data = await response.json();
-      console.log(data)
-      if (response.ok) {
-        if (isRegister) {
-          setIsRegister(false);
-          setFormData({ name: "", email: "", password: "" });
-          alert("Registration successful! Please login.");
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            if (isRegister) {
+                setIsRegister(false);
+                setFormData({ name: "", email: "", password: "" });
+                alert("Registration successful! Please login.");
+            } else {
+                setUser({
+                    id: data.user.id,
+                    email: data.user.email,
+                    name: data.user.name,
+                    profile_picture: data.user.profile_picture
+                });
+
+                localStorage.setItem("token", data.token);
+
+                // Fetch and restore localStorage data from SQL
+                const storageResponse = await fetch(`http://localhost:5000/api/getLocalStorage/${data.user.id}`);
+                const storageData = await storageResponse.json();
+
+                if (storageData.localStorageData) {
+                    Object.entries(storageData.localStorageData).forEach(([key, value]) => {
+                        localStorage.setItem(key, String(value)); // Explicitly convert value to string
+                    });
+                    console.log("LocalStorage restored from database!");
+                }
+
+                navigate("/home");
+            }
         } else {
-          setUser({ id: data.user.id, email: data.user.email,name:data.user.name });
-          localStorage.setItem("token", data.token);
-
-          navigate("/home");
+            alert(data.message || "An error occurred");
         }
-      } else {
-        alert(data.message || "An error occurred");
-      }
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
     }
-  };
+};
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">

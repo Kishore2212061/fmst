@@ -9,6 +9,8 @@ import AddressDetails from "../components/AddressDetails";
 import PermanentAddress from "../components/PermanentAddress";
 import BankDetails from "../components/BankDetails";
 import { FormSection } from "./types/form";
+import { saveUserData } from '../backendCall/PersonalPage';
+import toast from "react-hot-toast";
 
 const ProfileForm: React.FC = () => {
   // State Management
@@ -240,25 +242,57 @@ const ProfileForm: React.FC = () => {
               <span>Previous</span>
             </motion.button>
 
-            <motion.button
-              type={isLastStep ? "submit" : "button"}
-              onClick={() => !isLastStep && handleStepChange(step + (isMobile ? 1 : 2))}
-              className="flex items-center space-x-1 md:space-x-2 px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium text-white shadow-md hover:shadow-lg transition-all"
-              style={{
-                background: isLastStep
-                  ? "linear-gradient(to right, #059669, #10b981)"
-                  : "linear-gradient(to right, #4f46e5, #7c3aed)"
-              }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span>{isLastStep ? "Save Profile" : "Next"}</span>
-              {isLastStep ? (
-                <Save className="w-4 h-4 md:w-5 md:h-5" />
-              ) : (
-                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
-              )}
-            </motion.button>
+<motion.button
+  type="button"
+  onClick={() => {
+    if (isLastStep) {
+      saveUserData()
+        .then(() => {
+          toast.success("✅ Profile saved successfully!", {
+            duration: 4000,
+            style: {
+              fontSize: "18px",
+              padding: "16px",
+              borderRadius: "8px",
+              background: "#059669",
+              color: "#fff",
+            },
+          });
+        })
+        .catch(() => {
+          toast.error("❌ Failed to save profile. Try again.", {
+            duration: 4000,
+            style: {
+              fontSize: "18px",
+              padding: "16px",
+              borderRadius: "8px",
+              background: "#dc2626",
+              color: "#fff",
+            },
+          });
+        });
+    } else {
+      handleStepChange(step + (isMobile ? 1 : 2));
+    }
+  }}
+  className="flex items-center space-x-1 md:space-x-2 px-4 md:px-6 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium text-white shadow-md hover:shadow-lg transition-all"
+  style={{
+    background: isLastStep
+      ? "linear-gradient(to right, #059669, #10b981)"
+      : "linear-gradient(to right, #4f46e5, #7c3aed)",
+  }}
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+>
+  <span>{isLastStep ? "Save Profile" : "Next"}</span>
+  {isLastStep ? (
+    <Save className="w-4 h-4 md:w-5 md:h-5" />
+  ) : (
+    <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+  )}
+</motion.button>
+
+
           </div>
         </footer>
       </motion.form>
